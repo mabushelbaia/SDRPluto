@@ -57,7 +57,7 @@ class SDR:
 if __name__ == "__main__":
     sdr = SDR("192.168.2.1", sample_rate=1e6, center_freq=100e6, num_samps=10000)
     sdr.rx_config(mode="manual", gain=50)
-    sdr.tx_config(mode="manual", gain=0)
+    sdr.tx_config(mode="manual", gain=10)
     
     wc =  2*np.pi*2000
     # Signal Configuration
