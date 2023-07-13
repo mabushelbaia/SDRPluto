@@ -50,7 +50,7 @@ class SDR:
     def signal(self, i_samples, q_samples):
         samples = i_samples + 1j*q_samples
         samples = np.repeat(samples, 1)
-        samples *= 2**14 
+        samples *= 2**14
         return samples
         
 
@@ -63,8 +63,10 @@ if __name__ == "__main__":
     # Signal Configuration
     ts = 1/float(sdr.sample_rate)
     t = np.arange(0, sdr.num_samps*ts, ts)
-    samples = sdr.signal(np.sin(wc*t), np.cos(wc*t))
+    samples = sdr.signal(-np.sin(wc*t), np.cos(wc*t))
     sdr.transmit(samples)
     rx_samples = sdr.recive()
     plt.plot(t, np.real(rx_samples))
+    # plt.plot(t, np.imag(rx_samples))
+    # plt.plot(t, np.real(rx_samples) + np.imag(rx_samples))
     plt.show()
