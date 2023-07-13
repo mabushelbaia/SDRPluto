@@ -2,7 +2,7 @@ import numpy as np
 import adi
 import matplotlib.pyplot as plt
 class SDR:
-
+    
     def __init__(self, IP, sample_rate=1e6, center_freq=100e6, num_samps=10000):
         self.pluto = adi.Pluto(f"ip:{IP}")
         self.sample_rate = sample_rate
@@ -16,17 +16,28 @@ class SDR:
         self.pluto.rx_rf_bandwidth = int(self.sample_rate)
         self.pluto.rx_buffer_size = self.num_samps
         self.pluto.gain_control_mode_chan0 = mode
-        if mode == "manual" and gain >= 0 and gain <= 74.5:
-            self.pluto.rx_hardwaregain_chan0 = gain
+        print(f"\033[92m [RECIVE MODE] \033[00m {mode}")
+        if mode == "manual":
+            if gain >= 0 and gain <= 74.5:
+                self.pluto.rx_hardwaregain_chan0 = gain
+            else:
+                print("\033[91m [WARNING] \033[00m RECIVE Gain must be between 0 and 74.5 dB")
+        print(f"\033[92m [RECIVE GAIN] \033[00m {self.pluto._get_iio_attr('voltage0','hardwaregain', False)} dB")
+                
         
-    def tx_config(self, mode="manual", gain=0.0):
-        # Configure TX
+    def tx_config(self, mode="manual", gain=1.0):
+        # Configure TX  
         self.pluto.tx_lo = int(self.center_freq)
         self.pluto.tx_rf_bandwidth = int(self.sample_rate)
         self.pluto.tx_cyclic_buffer = True # Enable cyclic buffers
         self.pluto.gain_control_mode_chan0 = mode
-        if mode == "manual" and gain >= -50 and gain <= 0:
-            self.pluto.tx_hardwaregain_chan0 = gain
+        print(f"\033[92m [TRANSMIT MODE] \033[00m {mode}")
+        if mode == "manual":
+            if  gain >= -50 and gain <= 0:
+                self.pluto.tx_hardwaregain_chan0 = gain
+            else:
+                print("\033[91m [WARNING] \033[00m TRANSMIT Gain must be between -50 and 0 dB")
+        print(f"\033[92m [TRANSMIT GAIN] \033[00m {self.pluto._get_iio_attr('voltage0','hardwaregain', True)} dB")
     
     def recive(self):
         self.rx_samples = self.pluto.rx()
