@@ -25,9 +25,6 @@ samples *= 2**14 # To scale the signal according to the range of the SDR
 
 while True:
     sdr.tx_destroy_buffer()
-    #time.sleep(2)
-
-    # Start the transmitter
     sdr.tx_cyclic_buffer = True # Enable cyclic buffers
     sdr.tx(tx_samples) # start transmitting
     plt.clf()
