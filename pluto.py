@@ -67,6 +67,4 @@ if __name__ == "__main__":
     sdr.transmit(samples)
     rx_samples = sdr.recive()
     plt.plot(t, np.real(rx_samples))
-    # plt.plot(t, np.imag(rx_samples))
-    # plt.plot(t, np.real(rx_samples) + np.imag(rx_samples))
     plt.show()
