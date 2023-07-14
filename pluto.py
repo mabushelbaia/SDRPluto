@@ -25,15 +25,14 @@ class SDR:
         print(f"\033[92m [RECIVE GAIN] \033[00m {self.pluto._get_iio_attr('voltage0','hardwaregain', False)} dB")
                 
         
-    def tx_config(self, mode="manual", gain=1.0):
+    def tx_config(self, mode="manual", gain=0.0):
         # Configure TX  
         self.pluto.tx_lo = int(self.center_freq)
         self.pluto.tx_rf_bandwidth = int(self.sample_rate)
-        self.pluto.tx_cyclic_buffer = True # Enable cyclic buffers
         self.pluto.gain_control_mode_chan0 = mode
         print(f"\033[92m [TRANSMIT MODE] \033[00m {mode}")
         if mode == "manual":
-            if  gain >= -50 and gain <= 0:
+            if  gain >= -90 and gain <= 0:
                 self.pluto.tx_hardwaregain_chan0 = gain
             else:
                 print("\033[91m [WARNING] \033[00m TRANSMIT Gain must be between -50 and 0 dB")
@@ -48,8 +47,8 @@ class SDR:
         self.pluto.tx(tx_samples)
     
     def signal(self, i_samples, q_samples):
-        samples = i_samples + 1j*q_samples
-        samples = np.repeat(samples, 1)
+        signal = i_samples + 1j*q_samples
+        samples = np.repeat(signal, 1)
         samples *= 2**14
         return samples
         
@@ -63,7 +62,7 @@ if __name__ == "__main__":
     # Signal Configuration
     ts = 1/float(sdr.sample_rate)
     t = np.arange(0, sdr.num_samps*ts, ts)
-    samples = sdr.signal(-np.sin(wc*t), np.cos(wc*t))
+    samples = sdr.signal(np.sin(wc*t), np.cos(wc*t))
     sdr.transmit(samples)
     rx_samples = sdr.recive()
     plt.plot(t, np.real(rx_samples))

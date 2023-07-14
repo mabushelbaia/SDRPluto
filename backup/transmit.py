@@ -6,7 +6,7 @@ sample_rate = 1e6 # Hz
 center_freq = 100e6 # Hz
 num_samps = 10000 # number of samples returned per call to rx()
 
-sdr = adi.Pluto("ip:192.168.2.1")
+sdr = adi.Pluto("ip:192.168.2.1", sample_rate=1e6, center_freq=100e6, num_samps=10000)
 sdr.gain_control_mode_chan0 = 'manual'
 print(sdr._get_iio_attr('voltage0','hardwaregain', False))
 sdr.sample_rate = int(sample_rate)
