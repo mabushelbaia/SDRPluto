@@ -9,10 +9,11 @@ wc =  2*np.pi*2000
 # Signal Configuration
 ts = 1/float(sdr.sample_rate)
 t = np.arange(0, sdr.num_samps*ts, ts)
-samples = sdr.signal(-np.sin(wc*t), np.cos(wc*t))
+samples = sdr.signal(np.sin(wc*t), np.cos(wc*t))
 plt.plot(t, np.real(samples))
 while True:
     sdr.pluto.tx_destroy_buffer()
     sdr.pluto.tx_cyclic_buffer = True
     sdr.transmit(samples)
     time.sleep(2)
+    
