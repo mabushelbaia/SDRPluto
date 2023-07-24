@@ -37,25 +37,28 @@ samples *= 2**14 # To scale the signal according to the range of the SDR
 
 while True:
  # Stop transmitting
-#  #time.sleep(2)
+ sdr.tx_destroy_buffer()
+ #time.sleep(2)
 
-#  # Start the transmitter
- #sdr.tx_destroy_buffer()
- rx_samples = sdr.rx()
-#  sdr.tx_cyclic_buffer = True # Enable cyclic buffers
-#  sdr.tx(samples) # start transmitting
+ # Start the transmitter
+ sdr.tx_cyclic_buffer = True # Enable cyclic buffers
+ sdr.tx(samples) # start transmitting
 
  # Clear buffer just to be safe
+ for i in range (0, 10):
+    raw_data = sdr.rx()
+
  # Receive samples
+ rx_samples = sdr.rx()
  
-#  plt.figure(0)
-#  plt.clf()
-#  plt.plot(t,np.real(tx_samples))
-#  #plt.plot(np.imag(rx_samples[::10]))
-#  plt.ylabel("Amplitude")
-#  plt.title('Transmitted')
-#  plt.xlabel("Time")
-#  plt.pause(0.05) 
+ plt.figure(0)
+ plt.clf()
+ plt.plot(t,np.real(tx_samples))
+ #plt.plot(np.imag(rx_samples[::10]))
+ plt.ylabel("Amplitude")
+ plt.title('Transmitted')
+ plt.xlabel("Time")
+ plt.pause(0.05) 
 
  plt.figure(1)
  plt.clf()

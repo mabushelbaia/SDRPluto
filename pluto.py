@@ -1,6 +1,7 @@
 import numpy as np
 import adi
 import matplotlib.pyplot as plt
+import time
 class SDR:
     
     def __init__(self, IP, sample_rate=1e6, center_freq=100e6, num_samps=10000):
@@ -14,6 +15,7 @@ class SDR:
         # Configure RX
         self.pluto.rx_lo = int(self.center_freq)
         self.pluto.rx_rf_bandwidth = int(self.sample_rate)
+        print(f"\033[92m [RECIVE BANDWIDTH] \033[00m {self.pluto._get_iio_attr('voltage0','rf_bandwidth', False)} Hz")
         self.pluto.rx_buffer_size = self.num_samps
         self.pluto.gain_control_mode_chan0 = mode
         print(f"\033[92m [RECIVE MODE] \033[00m {mode}")
@@ -29,6 +31,7 @@ class SDR:
         # Configure TX  
         self.pluto.tx_lo = int(self.center_freq)
         self.pluto.tx_rf_bandwidth = int(self.sample_rate)
+        print(f"\033[92m [RECIVE BANDWIDTH] \033[00m {self.pluto._get_iio_attr('voltage0','rf_bandwidth', False)} Hz")
         self.pluto.gain_control_mode_chan0 = mode
         print(f"\033[92m [TRANSMIT MODE] \033[00m {mode}")
         if mode == "manual":
@@ -54,7 +57,7 @@ class SDR:
         
 
 if __name__ == "__main__":
-    sdr = SDR("192.168.2.1", sample_rate=1e6, center_freq=100e6, num_samps=10000)
+    sdr = SDR("192.168.2.1", sample_rate=1e6, center_freq=1000e6, num_samps=10000)
     sdr.rx_config(mode="manual", gain=50)
     sdr.tx_config(mode="manual", gain=10)
     
@@ -64,6 +67,8 @@ if __name__ == "__main__":
     t = np.arange(0, sdr.num_samps*ts, ts)
     samples = sdr.signal(np.sin(wc*t), np.cos(wc*t))
     sdr.transmit(samples)
+    for i in range (0, 10):
+        raw_data = sdr.recive()
     rx_samples = sdr.recive()
     plt.plot(t, np.real(rx_samples))
     plt.show()
