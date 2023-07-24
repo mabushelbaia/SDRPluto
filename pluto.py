@@ -3,7 +3,6 @@ import adi
 import matplotlib.pyplot as plt
 import time
 class SDR:
-    
     def __init__(self, IP, sample_rate=1e6, center_freq=100e6, num_samps=10000):
         self.pluto = adi.Pluto(f"ip:{IP}")
         self.sample_rate = sample_rate
@@ -54,21 +53,3 @@ class SDR:
         samples = np.repeat(signal, 1)
         samples *= 2**14
         return samples
-        
-
-if __name__ == "__main__":
-    sdr = SDR("192.168.2.1", sample_rate=1e6, center_freq=1000e6, num_samps=10000)
-    sdr.rx_config(mode="manual", gain=50)
-    sdr.tx_config(mode="manual", gain=10)
-    
-    wc =  2*np.pi*2000
-    # Signal Configuration
-    ts = 1/float(sdr.sample_rate)
-    t = np.arange(0, sdr.num_samps*ts, ts)
-    samples = sdr.signal(np.sin(wc*t), np.cos(wc*t))
-    sdr.transmit(samples)
-    for i in range (0, 10):
-        raw_data = sdr.recive()
-    rx_samples = sdr.recive()
-    plt.plot(t, np.real(rx_samples))
-    plt.show()
